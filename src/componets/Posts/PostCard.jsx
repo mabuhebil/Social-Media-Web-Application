@@ -60,7 +60,7 @@ export default function PostCard({ post, isDetails }) {
         })}
 
       {!isDetails && post.commentsCount > 1 && (
-        <Link to={`/post-details/${post.id}`} className="text-blue-700 p-4">
+        <Link to={`/post-details/${post.id}`} className="text-blue-700 p-4 text-center">
           View All Comments
         </Link>
       )}
