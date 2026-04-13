@@ -11,10 +11,11 @@ export default function PostDetails() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["single-post", postId],
     queryFn: () => getSinglePost(postId),
-    select: (data) => data.data.data.post,
+    select: (data) => data?.data.data.post,
   });
 
-  console.log({ data, isLoading, isError, error });
+  console.log("data", data);
+
   if (isError) {
     return (
       <section className="py-12">

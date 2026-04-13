@@ -19,7 +19,7 @@ export default function CommentForm() {
   async function createComment(data) {
     const payLoad = {
       content: data.content,
-      image: img1,
+      post: "664d4330c99473930fa0ed8d",
     };
     // console.log("click", data);
     const x = await addNewComment(payLoad);
