@@ -10,6 +10,8 @@ export default function PostListing() {
     queryFn: getAllPosts,
   });
 
+    console.log("DataFromGetAllPost", data);
+
   if (isError) {
     return (
       <section className="py-12">

@@ -4,8 +4,8 @@ import AppButton from "./Shared/AppButton/AppButton";
 import { IoMdSend } from "react-icons/io";
 import { useForm } from "react-hook-form";
 import { addNewComment } from "./Services/comments.services";
-import img1 from "../../src/assets/Image1.webp";
-export default function CommentForm() {
+
+export default function CommentForm({ postId }) {
   const {
     handleSubmit,
     register,
@@ -19,11 +19,11 @@ export default function CommentForm() {
   async function createComment(data) {
     const payLoad = {
       content: data.content,
-      post: "664d4330c99473930fa0ed8d",
+      postId: postId,
     };
     // console.log("click", data);
     const x = await addNewComment(payLoad);
-    console.log(x);
+    console.log("AddNewComment", x);
   }
 
   return (

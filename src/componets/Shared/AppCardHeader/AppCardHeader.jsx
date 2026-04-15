@@ -12,6 +12,7 @@ export default function AppCardHeader({ topComment, post }) {
             src={topComment ? topComment.commentCreator.photo : post.user.photo}
             width={topComment ? 40 : 80}
           />
+
           <div className="flex flex-col">
             <p className="text-md">
               {topComment ? topComment.commentCreator.name : post.user.name}

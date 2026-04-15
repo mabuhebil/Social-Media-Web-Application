@@ -12,10 +12,33 @@ import CommentCard from "../Comments/CommentCard";
 import AppCardHeader from "../Shared/AppCardHeader/AppCardHeader";
 import { Link } from "react-router-dom";
 import CommentForm from "../CommentForm";
+import { useQuery } from "@tanstack/react-query";
+import { getPostComments } from "../Services/comments.services";
 
-export default function PostCard({ post, isDetails }) {
+// function handelGetComments(){
+
+// }
+
+export default function PostCard({
+  post,
+  isDetails,
+  isGetAllComments = false,
+}) {
   const postHasImage = !!post.image;
   const firstComment = post.commentsCount;
+
+  const { id } = post;
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["getPostComments", id],
+    queryFn: () => getPostComments(id),
+    select: (data) => data?.data.data.comments,
+    enabled: isGetAllComments,
+  });
+
+  const comments = data ?? [];
+
+  console.log("dataFromGetPostComments", comments);
   return (
     <Card fullWidth={true}>
       <AppCardHeader topComment={false} post={post} />
@@ -49,9 +72,13 @@ export default function PostCard({ post, isDetails }) {
         </button>
       </CardFooter>
 
-      <CommentForm />
+      <CommentForm postId={id} />
 
       {firstComment && <CommentCard comment={post.topComment} />}
+
+      {comments.map((comment) => (
+        <CommentCard comment={comment} />
+      ))}
 
       {isDetails &&
         post.commentsCount > 0 &&
@@ -60,7 +87,10 @@ export default function PostCard({ post, isDetails }) {
         })}
 
       {!isDetails && post.commentsCount > 1 && (
-        <Link to={`/post-details/${post.id}`} className="text-blue-700 p-4 text-center">
+        <Link
+          to={`/post-details/${post.id}`}
+          className="text-blue-700 p-4 text-center"
+        >
           View All Comments
         </Link>
       )}
