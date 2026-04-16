@@ -4,8 +4,9 @@ import AppButton from "./Shared/AppButton/AppButton";
 import { IoMdSend } from "react-icons/io";
 import { useForm } from "react-hook-form";
 import { addNewComment } from "./Services/comments.services";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export default function CommentForm({ postId }) {
+export default function CommentForm({ postId, queryKey }) {
   const {
     handleSubmit,
     register,
@@ -16,14 +17,29 @@ export default function CommentForm({ postId }) {
     },
   });
 
+  const queryClientObj = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (payLoad) => addNewComment(payLoad),
+    onSuccess: (newComment) => {
+      queryClientObj.setQueryData(queryKey, (oldData) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          comments: [...(oldData.comments || []), newComment],
+        };
+      });
+    },
+  });
+
   async function createComment(data) {
     const payLoad = {
       content: data.content,
       postId: postId,
     };
-    // console.log("click", data);
-    const x = await addNewComment(payLoad);
-    console.log("AddNewComment", x);
+
+    mutation.mutate(payLoad);
   }
 
   return (

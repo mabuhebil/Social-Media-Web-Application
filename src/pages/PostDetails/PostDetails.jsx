@@ -36,7 +36,7 @@ export default function PostDetails() {
   return (
     <section className="py-12">
       <div className="w-full max-w-100 md:max-w-1/2 mx-auto space-y-4">
-        {data && <PostCard post={data} isDetails={true} isGetAllComments={true}/>}
+        {data && <PostCard post={data} isDetails={true} isGetAllComments={true} queryKey={["single-post", postId]}/>}
       </div>
     </section>
   );

@@ -34,7 +34,7 @@ export default function PostListing() {
       <div className="w-full max-w-100 md:max-w-1/2 mx-auto space-y-4">
         {data &&
           data.data.data.posts.map((post) => (
-            <PostCard key={post.id} post={post} />
+            <PostCard key={post.id} post={post} queryKey={["all-posts"]} />
           ))}
       </div>
     </section>

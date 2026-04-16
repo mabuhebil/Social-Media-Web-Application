@@ -23,13 +23,14 @@ export default function PostCard({
   post,
   isDetails,
   isGetAllComments = false,
+  queryKey
 }) {
   const postHasImage = !!post.image;
   const firstComment = post.commentsCount;
 
   const { id } = post;
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { data } = useQuery({
     queryKey: ["getPostComments", id],
     queryFn: () => getPostComments(id),
     select: (data) => data?.data.data.comments,
@@ -72,7 +73,7 @@ export default function PostCard({
         </button>
       </CardFooter>
 
-      <CommentForm postId={id} />
+      <CommentForm postId={id} queryKey={queryKey} />
 
       {firstComment && <CommentCard comment={post.topComment} />}
 
