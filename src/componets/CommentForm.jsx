@@ -21,15 +21,8 @@ export default function CommentForm({ postId, queryKey }) {
 
   const mutation = useMutation({
     mutationFn: (payLoad) => addNewComment(payLoad),
-    onSuccess: (newComment) => {
-      queryClientObj.setQueryData(queryKey, (oldData) => {
-        if (!oldData) return oldData;
-
-        return {
-          ...oldData,
-          comments: [...(oldData.comments || []), newComment],
-        };
-      });
+    onSuccess: () => {
+      queryClientObj.invalidateQueries({queryKey:queryKey})
     },
   });
 
