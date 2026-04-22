@@ -11,6 +11,8 @@ import {
   Button,
   useDisclosure,
 } from "@heroui/react";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
 export default function PostCreation() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [isExicedImage, setISExicedImage] = useState(null);
@@ -26,6 +28,29 @@ export default function PostCreation() {
     setISExicedImage(null);
     ImageInput.current.value = "";
   }
+
+  function handelAddPost() {
+    const postObj = new FormData();
+
+    if (TextArea.current.value) {
+      postObj.append("body", TextArea.current.value);
+    }
+
+    if (ImageInput.current.files[0]) {
+      postObj.append("image", ImageInput.current.files[0]);
+    }
+    return axios.request({
+      url: `https://route-posts.routemisr.com/posts`,
+      method: "post",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user_token")} `,
+      },
+      data: postObj,
+    });
+  }
+  const { isPending, mutate } = useMutation({
+    mutationFn: handelAddPost,
+  });
   return (
     <>
       <section className="pt-12 ">
@@ -53,7 +78,10 @@ export default function PostCreation() {
                   </ModalHeader>
                   <ModalBody>
                     <div className="flex flex-row items-center gap-5">
-                      <Avatar alt="John Doe" src={isExicedImage} />
+                      <Avatar
+                        alt="John Doe"
+                        src="https://img.heroui.chat/image/avatar?w=400&h=400&u=3"
+                      />
                       <p>mohamed</p>
                     </div>
                     <Textarea
@@ -85,11 +113,16 @@ export default function PostCreation() {
                         onChange={handelChangeFile}
                       />
                     </label>
-                    <Button color="danger" variant="light" onPress={onClose}>
+                    <Button
+                      color="danger"
+                      variant="light"
+                      disabled={isPending}
+                      onPress={onClose}
+                    >
                       Close
                     </Button>
-                    <Button color="primary" onPress={onClose}>
-                      Action
+                    <Button color="primary" onPress={mutate}>
+                      Post
                     </Button>
                   </ModalFooter>
                 </>
