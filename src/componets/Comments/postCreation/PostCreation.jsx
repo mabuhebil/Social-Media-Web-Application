@@ -12,9 +12,10 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 export default function PostCreation() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [isExicedImage, setISExicedImage] = useState(null);
 
   const ImageInput = useRef();
@@ -48,8 +49,29 @@ export default function PostCreation() {
       data: postObj,
     });
   }
+
+  const queryClient = useQueryClient();
   const { isPending, mutate } = useMutation({
     mutationFn: handelAddPost,
+    onSuccess: () => {
+      (handleCloseImage(),
+        (TextArea.current.value = ""),
+        toast.success("creation post been successfuly", {
+          autoClose: 2000,
+          closeOnClick: true,
+        }),
+        onClose(),
+        queryClient.invalidateQueries({
+          queryKey: ["all-posts"],
+          exact: true,
+        }));
+    },
+    onError: () => {
+      toast.error("creation post faild", {
+        autoClose: 2000,
+        closeOnClick: true,
+      });
+    },
   });
   return (
     <>
