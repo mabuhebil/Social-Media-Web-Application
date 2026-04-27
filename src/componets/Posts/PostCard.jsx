@@ -23,12 +23,14 @@ export default function PostCard({
   post,
   isDetails,
   isGetAllComments = false,
-  queryKey
+  queryKey,
 }) {
   const postHasImage = !!post.image;
   const firstComment = post.commentsCount;
 
   const { id } = post;
+
+  const { _id } = post.user;
 
   const { data } = useQuery({
     queryKey: ["getPostComments", id],
@@ -39,10 +41,9 @@ export default function PostCard({
 
   const comments = data ?? [];
 
-  console.log("dataFromGetPostComments", comments);
   return (
     <Card fullWidth={true}>
-      <AppCardHeader topComment={false} post={post} />
+      <AppCardHeader topComment={false} post={post} userCardId={_id} />
       <Divider />
       <CardBody>
         <p>{post.body}</p>
@@ -75,16 +76,16 @@ export default function PostCard({
 
       <CommentForm postId={id} queryKey={queryKey} />
 
-      {firstComment && <CommentCard comment={post.topComment} />}
+      {firstComment && <CommentCard comment={post.topComment} userCardId={_id} />}
 
       {comments.map((comment) => (
-        <CommentCard comment={comment} />
+        <CommentCard comment={comment} userCardId={_id} />
       ))}
 
       {isDetails &&
         post.commentsCount > 0 &&
         Object.keys(post.topComment).map((comment) => {
-          <CommentCard comment={comment} />;
+          <CommentCard comment={comment} userCardId={_id} />;
         })}
 
       {!isDetails && post.commentsCount > 1 && (
