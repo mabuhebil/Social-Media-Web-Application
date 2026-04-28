@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { addNewComment } from "./Services/comments.services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export default function CommentForm({ postId, queryKey }) {
+export default function CommentForm({ postId }) {
   const {
     handleSubmit,
     register,
@@ -22,7 +22,8 @@ export default function CommentForm({ postId, queryKey }) {
   const mutation = useMutation({
     mutationFn: (payLoad) => addNewComment(payLoad),
     onSuccess: () => {
-      queryClientObj.invalidateQueries({queryKey:queryKey})
+      queryClientObj.invalidateQueries({ queryKey: ["all-posts"] });
+      queryClientObj.invalidateQueries({ queryKey: ["single-post", postId] });
     },
   });
 

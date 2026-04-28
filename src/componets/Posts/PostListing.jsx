@@ -10,7 +10,7 @@ export default function PostListing() {
     queryFn: getAllPosts,
   });
 
-    console.log("DataFromGetAllPost", data);
+  console.log("DataFromGetAllPost", data);
 
   if (isError) {
     return (
@@ -34,7 +34,12 @@ export default function PostListing() {
       <div className="w-full max-w-100 md:max-w-1/2 mx-auto space-y-4">
         {data &&
           data.data.data.posts.map((post) => (
-            <PostCard key={post.id} post={post} queryKey={["all-posts"]} />
+            <PostCard
+              key={post.id}
+              post={post}
+              queryKey={["all-posts"]}
+              queryKeySinglePost={false}
+            />
           ))}
       </div>
     </section>

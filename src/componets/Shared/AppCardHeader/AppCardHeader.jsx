@@ -13,11 +13,66 @@ import { HiDotsVertical } from "react-icons/hi";
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { AuthContext } from "../../context/AuthContext";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-export default function AppCardHeader({ topComment, post, userCardId }) {
+export default function AppCardHeader({
+  topComment,
+  post,
+  postId,
+  userCardId,
+  commentId,
+  IsComment,
+  queryKey,
+}) {
   const { userId } = useContext(AuthContext);
 
   const isTheSameId = userId == userCardId;
+
+  const endPoint = IsComment ? "comment" : "post";
+
+  function handelDeletePost() {
+    return axios.request({
+      url: `https://route-posts.routemisr.com/posts/${postId}`,
+      method: "Delete",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user_token")} `,
+      },
+    });
+  }
+
+  function handelDeleteComment() {
+    console.log("id:", postId);
+    return axios.request({
+      url: `https://route-posts.routemisr.com/posts/${postId}/comments/${commentId}`,
+      method: "Delete",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("user_token")} `,
+      },
+    });
+  }
+
+  const queryClient = useQueryClient();
+  const { mutate: handelDelete } = useMutation({
+    mutationFn: () => {
+      return IsComment ? handelDeleteComment() : handelDeletePost();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["all-posts"] });
+      queryClient.invalidateQueries({ queryKey: queryKey });
+      toast.success(`Deleting ${endPoint} been successfuly`, {
+        autoClose: 2000,
+        closeOnClick: true,
+      });
+    },
+    onError: () => {
+      toast.error(`deleting ${endPoint}faild`, {
+        autoClose: 2000,
+        closeOnClick: true,
+      });
+    },
+  });
 
   return (
     <CardHeader className="flex justify-between gap-3">
@@ -49,7 +104,11 @@ export default function AppCardHeader({ topComment, post, userCardId }) {
           </DropdownTrigger>
 
           <DropdownMenu>
-            <DropdownItem key="new" className="flex  gap-0.5">
+            <DropdownItem
+              key="new"
+              className="flex  gap-0.5"
+              onClick={handelDelete}
+            >
               <MdDelete />
               <p>Delete</p>
             </DropdownItem>

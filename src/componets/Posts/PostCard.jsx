@@ -24,6 +24,8 @@ export default function PostCard({
   isDetails,
   isGetAllComments = false,
   queryKey,
+  queryKeyDetails,
+  queryKeySinglePost,
 }) {
   const postHasImage = !!post.image;
   const firstComment = post.commentsCount;
@@ -43,7 +45,13 @@ export default function PostCard({
 
   return (
     <Card fullWidth={true}>
-      <AppCardHeader topComment={false} post={post} userCardId={_id} />
+      <AppCardHeader
+        topComment={false}
+        post={post}
+        userCardId={_id}
+        postId={id}
+        queryKey={queryKey}
+      />
       <Divider />
       <CardBody>
         <p>{post.body}</p>
@@ -74,9 +82,15 @@ export default function PostCard({
         </button>
       </CardFooter>
 
-      <CommentForm postId={id} queryKey={queryKey} />
+      <CommentForm
+        postId={id}
+        queryKey={queryKey}
+        queryKeySinglePost={queryKeySinglePost}
+      />
 
-      {firstComment && <CommentCard comment={post.topComment} userCardId={_id} />}
+      {firstComment && (
+        <CommentCard comment={post.topComment} userCardId={_id} />
+      )}
 
       {comments.map((comment) => (
         <CommentCard comment={comment} userCardId={_id} />
